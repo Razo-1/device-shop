@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop - E-commerce Platform</title>
+    <link rel="stylesheet" href="/stylesheets/home/home.css">
+    <link rel="stylesheet" href="/stylesheets/shop/shop.css">
+    <link rel="stylesheet" href="/stylesheets/search/search.css">
+    <link rel="stylesheet" href="/stylesheets/filterStyle/filter.css">
+    <link rel="stylesheet" href="/stylesheets/notification/notification.css">
+</head>
+<body>
+    <div class="container">
+        <%- include('./total/header/header.ejs')  %>
+        
+        <div class="page-header">
+
+            <h1 class="page-title"><%= (shop && shop.length > 0 && shop[0].categorySlug) ? shop[0].categorySlug : 'Catalog' %></h1> 
+
+            <div class="results-count" style="margin:0 auto 8px 20px;">Showing <%= shop.length %> products</div>
+            <%- include('./total/search/search.ejs')  %>
+        </div>
+
+        <div class="newSearch">
+            <%- include('./total/filter/filter.ejs') %>
+        </div>
+
+         <div class="products-grid">
+            
+            <% const categorySlug = (shop && shop.length > 0 && shop[0].categorySlug) ? shop[0].categorySlug : ''; %>
+            <% shop.forEach((product,indx) => { %>
+            <div class="product-card" data-productId="<%= product._id %>">
+                <a href="/device/product?type=<%= categorySlug %>&detail=<%= product._id %>" data-product="<%= indx %>" class="card-link-overlay"></a>
+                <div class="product-image-container">
+
+                    <div class="likeDevice">
+                        <div class="badges">
+                            <% if (product.isNew) { %>
+                                <div class="badge badge-new">New</div>
+                            <% } else { %>
+                                <div style="width: 1px;"></div>
+                            <% } %>
+                            
+                            <div class="badge badge-rating">
+                                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                <%= product.rating %>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-favorite <%= product.favorit ? 'active' : '' %>" aria-label="Add to favorites" data-id="<%= product._id %>">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    
+                    <img src="<%= product.image %>" alt="<%= product.title %>" class="product-image">
+                </div>
+
+                <div class="product-brand"><%= product.brand %></div>
+                <h3 class="product-title"><%= product.title %></h3>
+                
+                <div class="product-params">
+                    <% if (product.params && product.params.length > 0) { %>
+                        <% product.params.slice(0, 3).forEach(param => { %>
+                        <div class="param-row">
+                            <span class="param-title"><%= param.title %></span>
+                            <span class="param-desc"><%= param.desc %></span>
+                        </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+
+                <div class="product-footer">
+                    <div class="price-row">
+                        <div class="product-price">$<%= Math.ceil(product.price / 362).toLocaleString('en-US') %></div>
+                        
+                        <% if (product.inStock > 5) { %>
+                            <div class="stock-status stock-high"><%= product.inStock %> in stock</div>
+                        <% } else if (product.inStock > 0) { %>
+                            <div class="stock-status stock-low"><%= product.inStock %> left</div>
+                        <% } else { %>
+                            <div class="stock-status stock-low" style="color: #ef4444; background: #fef2f2;">Out of stock</div>
+                        <% } %>
+                    </div>
+                    <button class="btn-primary btn-cart" data-cart="<%= indx + 'cart' %>">Add to Cart</button>
+                </div>
+            </div>
+            <% }) %>
+
+        </div>
+    </div>
+
+    <%- include('./total/Notification/notification.ejs')%>
+    
+    <script type="module" src="/javascripts/shop/index.js"></script>
+</body>
+</html>

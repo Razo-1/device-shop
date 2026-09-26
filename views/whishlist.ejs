@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link rel="stylesheet" href="/stylesheets/whishlist/whishlist.css">
+    <link rel="stylesheet" href="/stylesheets/notification/notification.css">
+
+</head>
+<body>
+
+    <div class="container">
+        <%- include('./total/header/header.ejs') %>
+         <div class="page-header">
+            <div>
+                <h1 class="page-title">My Wishlist</h1>
+                <div class="results-count">
+                    <% if (wishlist && wishlist.length > 0) { %>
+                        <%= wishlist.length %> saved items
+                    <% } else { %>
+                        No items saved yet
+                    <% } %>
+                </div>
+            </div>
+            <% if (wishlist && wishlist.length > 0) { %>
+            <div class="wishlist-actions">
+                <button class="btn-secondary" id="shareWishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                    Share
+                </button>
+                <button  class="btn-secondary btn-danger" id="clearWishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear All
+                </button>
+            </div>
+            <% } %>
+        </div>
+ 
+        <div class="products-grid">
+            <% if (wishlist && wishlist.length > 0) { %>
+                <% wishlist.forEach((product,ind) => { %>
+                    <div class="product-card" data-product-id="<%= product._id %>">
+                        <a href="/device/product?type=<%= product.categorySlug %>&detail=<%= product._id %>" class="card-link-overlay"></a>
+                        <div class="product-image-container">
+                            <div class="likeDevice">
+                                <div class="badges">
+                                    <% if (product.isNew) { %>
+                                        <div class="badge badge-new">New</div>
+                                    <% } else { %>
+                                        <div style="width: 1px;"></div>
+                                    <% } %>
+                                    <div class="badge badge-rating">
+                                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                        <%= product.rating %>
+                                    </div>
+                                </div>
+                                <button class="btn-favorite active" data-type="<%= product.categorySlug %>" data-id="<%= product._id %>" aria-label="Remove from favorites">
+                                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <img src="<%= product.image %>" alt="<%= product.title %>" class="product-image">
+                        </div>
+                        <div class="product-brand"><%= product.brand %></div>
+                        <h3 class="product-title"><%= product.title %></h3>
+                        <div class="product-params">
+                            <% product.params.slice(0, 3).forEach(param => { %>
+                                <div class="param-row">
+                                    <span class="param-title"><%= param.title %></span>
+                                    <span class="param-desc"><%= param.desc %></span>
+                                </div>
+                            <% }); %>
+                        </div>
+                        <div class="product-footer">
+                            <div class="price-row">
+                                <div class="product-price">$<%= Math.ceil(product.price / 362).toLocaleString('en-US') %></div>
+                                <% if (product.inStock > 5) { %>
+                                    <div class="stock-status stock-high"><%= product.inStock %> in stock</div>
+                                <% } else if (product.inStock > 0) { %>
+                                    <div class="stock-status stock-low"><%= product.inStock %> left</div>
+                                <% } else { %>
+                                    <div class="stock-status stock-low" style="color: #ef4444; background: #fef2f2;">Out of stock</div>
+                                <% } %>
+                            </div>
+                            <button class="btn-primary btn-cart" data-cartType="<%= product.categorySlug %>">Add to Cart</button>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+ 
+        <div class="empty-state" <% if (wishlist && wishlist.length > 0) { %>style="display: none;"<% } %>>
+            <div class="empty-icon">
+                <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </div>
+            <h2 class="empty-title">Your wishlist is empty</h2>
+            <p class="empty-text">Start adding your favorite products to keep track of items you love.</p>
+            <a class="btn-primary" href="/start/catalog">Continue Shopping</a>
+        </div>
+    </div>
+    <%- include('./total/Notification/notification.ejs') %>
+    <script type="module" src="/javascripts/wishlist/index.js"></script>
+</body>
+</html>

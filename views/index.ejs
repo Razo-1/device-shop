@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop - E-commerce Platform</title>
+    <link rel="stylesheet" href="/stylesheets/home/home.css">
+</head>
+<body>
+    <div class="container">
+        <%- include('./total/header/header.ejs')  %>
+        <div class="grid">
+            
+            <div class="catalogyBack card card-hero card-zoom">
+                <div class="content">
+                    <h1>Product<br>Catalog</h1>
+                    <p>Best deals and new items in one place</p>
+                </div>
+                <div class="arrow-icon"><a href="/start/catalog">→</a></div>
+            </div>
+ 
+            <div class="wishlist card card-light card-zoom">
+                <h3>Add to Wishlist</h3>
+                <p>Save items for later purchase</p>
+                <a href="/user/wishlist" class="arrow-icon" style="background: #f0f0f0; color: #333;">→</a>
+            </div>
+ 
+            <div id="cart" class="cartShop card card-accent card-zoom">
+                <div class="content">
+                    <h2>Shopping<br>Cart</h2>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="bottom-row">
+            <div class="shopper social-card">
+                <div>
+                    <div class="social-badge">Customers</div>
+                    <div class="social-text">active shoppers on our platform</div>
+                </div>
+                <div class="social-number">+150k</div>
+            </div>
+ 
+            <div class="rat card card-accent" style="grid-column: span 3;">
+                <div class="content">
+                    <div class="social-badge">Reviews</div>
+                    <p style="font-size: 13px; margin-bottom: 15px;">positive feedback from customers</p>
+                    <div class="social-number">+40k</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/javascripts/main/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+ <form action="/catalog" method="GET" class="filter-bar">
+        
+        <div class="filter-group-wrapper">
+            <div class="filter-title-box">
+                <svg viewBox="0 0 24 24">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                <span class="filter-title">Filters</span>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">Price ($)</span>
+                <div class="price-range">
+                    <input type="number" name="minPrice" placeholder="From" class="price-input" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
+                    <span class="price-separator">—</span>
+                    <input type="number" name="maxPrice" placeholder="To" class="price-input" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
+                </div>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">Brand</span>
+                <select name="brand" class="filter-select">
+                    <option value="">All Brands</option>
+                    <% category.forEach(el => {%>
+                        <option value="<%= el %>"><%= el %></option>
+                    <%})%>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">Status</span>
+                <div class="chips-group">
+                    <label class="chip-label">
+                        <input type="checkbox" name="inStock" value="true">
+                        <span class="chip">In Stock</span>
+                    </label>
+                    <label class="chip-label">
+                        <input type="checkbox" name="isNew" value="true">
+                        <span class="chip">New</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">Min Rating</span>
+                <select name="rating" class="filter-select">
+                    <option value="0">All Ratings</option>
+                    <option value="4.5">★ 4.5 & up</option>
+                    <option value="4.0">★ 4.0 & up</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <a class="btn-reset">Reset</a>
+            <button type="submit" class="btn-apply">Apply Filters</button>
+        </div>
+
+    </form>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/cart/cart.css">
+</head>
+<body>
+    <div class="container">
+        <%- include('./total/header/header.ejs') %>
+
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Shopping Cart</h1>
+                <div class="results-count"><%= cartDate.length %> item<%= cartDate.length !== 1 ? 's' : '' %></div>
+            </div>
+            <% if(cartDate.length) { %>
+            <div class="cart-actions">
+                <button id="cleanAll" data-items="<%= cartDate.length %>" class="btn-secondary btn-danger">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear Cart
+                </button>
+            </div>
+            <%}%>
+        </div>
+
+        <div id="itemCarts">
+         <% cartDate.forEach((item, ind) => { %>
+                    <div class="cart-item" data-product-id="<%= item._id %>">
+                        <div data-img="ind" class="item-image">
+                            <img src="<%= item.image %>" alt="<%= item.title %>" class="product-image">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-header">
+                                <div>
+                                    <div class="item-brand"><%= item.brand %></div>
+                                    <h3 class="item-title"><%= item.title %></h3>
+                                </div>
+                                <button class="btn-remove" data-type="<%= item.categorySlug %>" data-rem="<%= ind %>" aria-label="Remove from cart">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="item-specs">
+                                <% item.params.slice(0, 2).forEach(param => { %>
+                                    <div class="spec-item">
+                                        <span class="spec-label"><%= param.title %></span>
+                                        <span class="spec-value"><%= param.desc %></span>
+                                    </div>
+                                <% }); %>
+                            </div>
+                            <div class="item-footer">
+                                <div class="price-section">
+                                    <div class="item-price">$<%= Math.ceil(item.price / 362).toLocaleString('en-US') %></div>
+                                    <div class="item-total" data-original-price="<%= item.price %>">Total: $<%= (Math.ceil(item.price / 362))%></div>
+                                </div>
+                                <div class="quantity-control">
+                                    <button class="qty-btn qty-decrease" data-id="<%= item._id %>">-</button>
+                                    <input type="number" class="qty-input" value="1" max="<%= item.inStock %>" min="1" data-id="<%= item._id %>">
+                                    <button class="qty-btn qty-increase" data-id="<%= item._id %>">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+        </div>            
+                <% if(cartDate.length) { %>
+                    <div class="cart-summary">
+                        <div class="summary-card">
+                            <h2 class="summary-title">Order Summary</h2>
+                            <%
+                                const subtotal = cartDate.reduce((sum, item) => sum + Math.ceil(item.price / 362), 0);
+                                const tax = Math.ceil(subtotal * 0.08);
+                                const total = subtotal + tax;
+                            %>
+                            
+                            <div class="summary-row">
+                                <span class="summary-label">Subtotal</span>
+                                <span class="summary-value">$<%= subtotal %></span>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <span class="summary-label">Shipping</span>
+                                <span class="summary-value shipping-cost">$5</span>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <span class="summary-label">Tax</span>
+                                <span class="summary-value tax-cost">$<%= tax %></span>
+                            </div>
+        
+                            <div class="summary-divider"></div>
+        
+                            <div class="summary-row total-row">
+                                <span class="summary-label total-label">Total</span>
+                                <span class="summary-value total-value">$<%= total %></span>
+                            </div>
+        
+                            <button id="buy" class="btn-primary btn-checkout">
+                                Proceed to Checkout
+                            </button>
+        
+                        </div>
+                    </div>
+                <%}%>
+            </div>
+
+            
+
+             
+
+    <script type="module" src="/javascripts/cart/index.js"></script>
+</body>
+</html>

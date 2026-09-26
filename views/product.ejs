@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop - E-commerce Platform</title>
+    <link rel="stylesheet" href="/stylesheets/home/home.css">
+    <link rel="stylesheet" href="/stylesheets/product/product.css">
+    <link rel="stylesheet" href="/stylesheets/notification/notification.css">
+</head>
+<body>
+    <div class="container">
+        <%- include('./total/header/header.ejs')  %>
+
+        <div class="top-nav">
+            <a id="back" class="back-link">
+                <span>←</span> Back to Catalog
+            </a>
+            <span class="category-badge">
+                <%= typeof product !== 'undefined' ? product.categorySlug : 'headphones' %>
+            </span>
+        </div>
+
+        <div class="product-grid">
+            
+            <div class="image-card">
+                
+                <div class="badge-group">
+                    <% if (typeof product !== 'undefined' && product.isNew) { %>
+                        <span class="badge-tag badge-new">NEW</span>
+                    <% } else { %>
+                        <span class="badge-tag badge-new">FEATURED</span>
+                    <% } %>
+                    
+                    <span class="badge-tag badge-rating">
+                        ★ <%= typeof product !== 'undefined' ? product.rating : '4.7' %>
+                    </span>
+                </div>
+
+                <button class="btn-favorite <%= (typeof product !== 'undefined' && product.favorit) ? 'active' : '' %>" id="favBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </button>
+
+                <img src="<%= product?.image%>">
+            </div>
+
+            <div class="product-info">
+                <div>
+                    <div class="brand-label">
+                        <%= typeof product !== 'undefined' ? product.brand : 'Shure' %>
+                    </div>
+
+                    <h1 class="product-title">
+                        <%= typeof product !== 'undefined' ? product.title : 'Shure AONIC 50' %>
+                    </h1>
+
+                    <% if (typeof product !== 'undefined' && product.inStock > 0) { %>
+                        <div  class="stock-status <%= product.inStock < 5 ? 'low' : '' %>">
+                            <span class="stock-dot"></span>
+                            <span>In Stock(<span id="inStock"><%= product.inStock %></span> pcs)</span>
+                        </div>
+                    <% } else { %>
+                        <div class="stock-status low">
+                            <span class="stock-dot"></span>
+                            Out of Stock
+                        </div>
+                    <% } %>
+
+                    <div class="price-box">
+                        <div>
+                            <div class="price-label">Total Price</div>
+                            <div class="price-value">
+                                <%= typeof product !== 'undefined' ? Math.ceil(product.price / 362).toLocaleString('en-US') : '369 900' %> $
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions-group">
+                    <div class="quantity-picker">
+                        <button class="btn-qty" id="qtyMinus">-</button>
+                        <input type="text" id="qtyInput" value="1" class="qty-input" readonly>
+                        <button class="btn-qty" id="qtyPlus">+</button>
+                    </div>
+
+                    <button class="btn-add-cart">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                        Buy
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="specs-section">
+            <h2 class="section-title">Technical Specifications</h2>
+            
+            <div class="params-grid">
+                <% if (typeof product !== 'undefined' && product.params && product.params.length) { %>
+                    <% product.params.forEach(param => { %>
+                        <div class="param-card">
+                            <div class="param-title"><%= param.title %></div>
+                            <div class="param-desc"><%= param.desc %></div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="param-card">
+                        <div class="param-title">Type</div>
+                        <div class="param-desc">Over-Ear Wireless</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">Noise Cancellation</div>
+                        <div class="param-desc">ANC Technology</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">Battery Life</div>
+                        <div class="param-desc">Up to 20 hours</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">Sound Quality</div>
+                        <div class="param-desc">Professional Audio</div>
+                    </div>
+                    <div class="param-card">
+                        <div class="param-title">Connection</div>
+                        <div class="param-desc">Bluetooth 5.0</div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+    <%- include("./total/Notification/notification.ejs") %>
+    <script type="module" src="/javascripts/product/index.js"></script>
+</body>
+</html>

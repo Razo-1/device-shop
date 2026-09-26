@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category</title>
+    <link rel="stylesheet" href="/stylesheets/home/home.css">
+</head>
+<body>
+    <div class="container">
+
+        <%- include('./total/header/header.ejs')  %>
+
+        <div class="grid">
+            <% category.forEach((cat, index) => { %>
+                <% 
+                    let cardClass = 'card-light';
+                    if (index === 0) {
+                        cardClass = 'card-hero';
+                    } else if (index === 1 || index === 4) {
+                        cardClass = 'card-accent';
+                    }
+                %>
+                
+                <div class="card <%= cardClass %> card-zoom" style="background: <%= cat.color %>; background-image: url('<%= cat.image %>'); background-size: cover; background-position: center;">
+                    <div class="card-overlay"></div>
+                    <div class="content">
+                        <% if (index === 0) { %>
+                            <h1><%= cat.title.split(' ').join('<br>') %></h1>
+                            <p>Best deals and new items in one place</p>
+                        <% } else if (index === 1 || index === 4) { %>
+                            <h2><%= cat.title.split(' ').join('<br>') %></h2>
+                        <% } else { %>
+                            <h3><%= cat.title %></h3>
+                            <p>Explore category items</p>
+                        <% } %>
+                    </div>
+                    
+                    <a href="/<%= cat.endPoint %>" class="arrow-icon" <%= cardClass === 'card-light' ? 'style="background: #f0f0f0; color: #333;"' : '' %>
+                        <span>→</span>
+                    </a>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</body>
+</html>
