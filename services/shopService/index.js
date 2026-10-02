@@ -4,7 +4,7 @@ const { Config } = require("../config");
 
 class ShopService extends Config {
 
-    async filtring(endPoint, { minPrice, maxPrice, brand, inStock, isNew, rating }){
+    async filtring(endPoint,sessionId, { minPrice, maxPrice, brand, inStock, isNew, rating }){
         await conectDB('Shop')
         const db = getDB()
         
@@ -17,7 +17,7 @@ class ShopService extends Config {
         rating && (filter.rating = { $gte: rating })
         
         const products = await db.collection(endPoint).find(filter).toArray()
-        const userProduct = await this.#userProduct()
+        const userProduct = await this.#userProduct(sessionId)
 
         return products.map(el => ({
             ...el,
@@ -25,10 +25,10 @@ class ShopService extends Config {
         }))
     }
 
-    async addToWhishList({category, id}){
+    async addToWhishList(category, id,sessionId){
         try{
-            await this.#updateUser(category, id);
-            const bool = await this.#userDevice(id);
+            await this.#updateUser(category, id,sessionId);
+            const bool = await this.#userDevice(id,sessionId);
             return bool ? true : false
         }catch(error){
             console.log(error)
@@ -37,32 +37,32 @@ class ShopService extends Config {
 
     }
 
-    async #updateUser(category, id){
+    async #updateUser(category, id,sessionId){
         await conectDB('usersDB');
         const db = getDB();
 
-        const bool = await this.#userDevice(id);
+        const bool = await this.#userDevice(id,sessionId);
 
         if(bool){
             return await db.collection('users').updateOne(
-                {id : 1},
+                {_id : new ObjectId(sessionId)},
                 {$pull : { whishList : { id : new ObjectId(id) } } } 
             )
         }
 
         return await db.collection('users').updateOne(
-            {id : 1},
+            {_id : new ObjectId(sessionId)},
             {$push : { whishList : {category : category,id: new ObjectId(id)} } }
         )
     }
 
-    async #userDevice(id){
+    async #userDevice(id,sessionId){
         await conectDB('usersDB');
         const db = getDB();
 
         const bool = await db.collection('users').findOne(
             {
-                id : 1,
+                _id : new ObjectId(sessionId),
                 "whishList.id" : new ObjectId(id)
             }
         )
@@ -71,7 +71,7 @@ class ShopService extends Config {
     }
 
 
-    async addNewDevice({category, id}){
+    async addNewDevice(category, id,sessionId){
 
         try{
             await conectDB('usersDB');
@@ -79,13 +79,13 @@ class ShopService extends Config {
 
             await db.collection('users').updateOne(
                 {
-                    id : 1,
+                    _id : new ObjectId(sessionId),
                 },
                 {
                     $push : { cart : { category : category,id: new ObjectId(id)} } 
                 }
             )
-
+            
             return true
 
         }catch(error){
@@ -107,7 +107,7 @@ class ShopService extends Config {
     }
 
 
-    async searchDevice({catalog,item}){
+    async searchDevice(catalog,item,sessionId){
         await conectDB('Shop');
         const db = getDB();
 
@@ -116,7 +116,7 @@ class ShopService extends Config {
             $options : "i",
         }}).toArray()
 
-        const userProduct = await this.#userProduct()
+        const userProduct = await this.#userProduct(sessionId)
 
         return products.map(el => ({
             ...el,
@@ -124,9 +124,9 @@ class ShopService extends Config {
         }))
     }
 
-    async renderDevice({type,detail}){
+    async renderDevice(type,detail,sessionId){
         const product = await this.#shopProd(type,detail);
-        const userProduct = await this.#userProduct()
+        const userProduct = await this.#userProduct(sessionId)
 
         if(product && userProduct && userProduct.whishList && userProduct.whishList.some(el => el.id.toString() === product._id.toString())){
             product.favorit = true
@@ -139,12 +139,12 @@ class ShopService extends Config {
         return product
     }
 
-    async #userProduct(){
+    async #userProduct(sessionId){
         try{
             await conectDB('usersDB');
             const db = getDB();
 
-            return await db.collection('users').findOne({id : 1})
+            return await db.collection('users').findOne({_id : new ObjectId(sessionId)})
         }catch(error){
             console.log(error)
         }

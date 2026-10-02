@@ -218,6 +218,7 @@ nav a:hover {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .cart-item:hover .item-image .product-image {

@@ -49,7 +49,22 @@ document.querySelectorAll('button[data-rem]').forEach(el => {
                 id
             })
         })
-        
+        .then(res => res.json())
+        .then(res => {
+            if(res.ok){
+                cartItem.remove()
+
+                const count = document.querySelector('.results-count');
+                const n = Math.max(0, parseInt(count.textContent) - 1);
+                count.textContent = `${n} item${n !== 1 ? 's' : ''}`;
+
+                if(n === 0){
+                    document.querySelector('.cart-summary').style.display = 'none';
+                    document.querySelector('#cleanAll').style.display = 'none';
+                }
+            }
+        })
+        .catch(rej => console.log(rej))    
     })
 })
 

@@ -11,8 +11,10 @@ const { shopRouter } = require('./routes/shop');
 const { productRouter } = require('./routes/product');
 const { wishlistRouter } = require('./routes/whishlist');
 const { cartRouter } = require('./routes/cart');
+const { authRouter } = require('./routes/auth');
 
-const { HomeService,ShopService,ProductService,WishService,CartService } = require('./services');
+
+const { HomeService,ShopService,ProductService,WishService,CartService,AuthService } = require('./services');
 
 var app = express();
 
@@ -23,6 +25,7 @@ app.locals.services = {
   gadget : new ProductService(),
   wish: new WishService(),
   cart : new CartService(),
+  auth : new AuthService(),
 }
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,6 +44,7 @@ app.use('/device',shopRouter);
 app.use('/product',productRouter);
 app.use('/user',wishlistRouter);
 app.use('/user',cartRouter)
+app.use('/auth',authRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

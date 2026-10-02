@@ -73,7 +73,6 @@ document.addEventListener('click', (e) => {
 
     const cartBtn = e.target.closest('button[data-cart]');
     if (cartBtn) {
-        console.log('sss');
         toCart(cartBtn);
     }
 });

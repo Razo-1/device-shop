@@ -8,14 +8,14 @@ export const qty = (originalPrice) => {
     minus.addEventListener('click',(e) => {
         if(Number(input.value) > 1){
             input.value = Number(input.value) - 1
-            price.textContent = Number(price.textContent.trim().slice(0,-2)) - originalPrice + ' $'
+            price.textContent = (originalPrice * Number(input.value)).toLocaleString('en-US') + ' $'
         }
     })
     
     plus.addEventListener('click',(e) => {        
         if(Number(inStock.textContent) >= Number(input.value) + 1){
             input.value = Number(input.value) + 1
-            price.textContent = Number(price.textContent.trim().slice(0,-2)) + originalPrice + ' $'
+            price.textContent = (originalPrice * Number(input.value)).toLocaleString('en-US') + ' $'
         }
     })
 

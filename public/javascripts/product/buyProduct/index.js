@@ -25,7 +25,7 @@ export const buyProdcut = (originalPrice) => {
             .then(res => {
 
                 if(res.ok){
-                    price.textContent = originalPrice + ' $'
+                    price.textContent = originalPrice.toLocaleString('en-US') + ' $'
                     if(Number(inStock.textContent) - Number(input.value) === 0){
                         window.location.href = location.href
                     }else{

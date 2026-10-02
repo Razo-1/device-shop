@@ -2,8 +2,11 @@ class Wish {
     
     async wishRender(req, res, next) {
         try {
+
+            const { sessionId } = req.cookies;
+            
             const viewPath = req.app.locals.services.wish.createPath('whishlist');
-            const wishlist = await req.app.locals.services.wish.getWishList();
+            const wishlist = await req.app.locals.services.wish.getWishList(sessionId);
             
             res.render(viewPath, { wishlist });
         } catch (error) {
@@ -12,7 +15,10 @@ class Wish {
     }
 
     async clearAll(req,res,next) {
-        const del = await req.app.locals.services.wish.clearAllList();
+
+        const { sessionId } = req.cookies;
+
+        const del = await req.app.locals.services.wish.clearAllList(sessionId);
         res.json({msg : 'the date has been delete',ok : del})
     }
 }

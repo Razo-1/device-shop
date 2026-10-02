@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { conectDB, getDB } = require('../../DB');
+const { ObjectId } = require('mongodb');
 
 class Config {
     createPath(fileName){
@@ -33,11 +34,11 @@ class Config {
         return shop
     }
 
-    async renderUserDate(){
+    async renderUserDate(sessionId){
         await conectDB('usersDB');
         const db = getDB()
 
-        return await db.collection('users').findOne({id : 1})
+        return await db.collection('users').findOne({_id : new ObjectId(sessionId)})
     }
 
     async renderShopDate(category){

@@ -2,8 +2,9 @@ import { qty } from "./actionControl/index.js";
 import { buyProdcut } from "./buyProduct/index.js";
 import { toggleFavorite } from "./favorite/index.js";
 
-let originalPrice = Number(document.querySelector('.price-value').textContent.trim().slice(0,-2))
-
+const originalPrice = Number(
+    document.querySelector('.price-value').textContent.replace(/\D/g, '')
+);
 const back = document.getElementById('back');
 
 back.addEventListener('click',() => {

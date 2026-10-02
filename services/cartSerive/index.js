@@ -4,12 +4,12 @@ const { Config } = require('../config')
 
 class CartService extends Config {
 
-    async renderCart(){
-        return await this.#cartDate()
+    async renderCart(sessionId){
+        return await this.#cartDate(sessionId)
     }
 
-    async #cartDate(){
-        const user = await this.renderUserDate();
+    async #cartDate(sessionId){
+        const user = await this.renderUserDate(sessionId);
 
         const categoryCache = new Map()
 
@@ -25,14 +25,14 @@ class CartService extends Config {
         }))
     }
 
-    async #deleteAll(){
+    async #deleteAll(sessionId){
         
         try{
             await conectDB('usersDB')
             const db = getDB();
 
             await db.collection('users').updateOne(
-                {id : 1},
+                {_id : new ObjectId(sessionId)},
                 {$set : {cart : []}}
             )
 
@@ -45,8 +45,8 @@ class CartService extends Config {
     }
 
 
-   async deleteAllRes(res){
-        const del = await this.#deleteAll()
+   async deleteAllRes(res,sessionId){
+        const del = await this.#deleteAll(sessionId)
         
         if(del){
             res.status(200).json({msg : "The trash has been emptied.", ok : true})
@@ -56,13 +56,13 @@ class CartService extends Config {
    } 
 
 
-   async #deleteOne(id){
+   async #deleteOne(id,sessionId){
         try{
             await conectDB('usersDB')
             const db = getDB();
 
             await db.collection('users').updateOne(
-                {id : 1},
+                {_id : new ObjectId(sessionId)},
                 {$pull : {cart : {id :new ObjectId(id)}}}
             )
 
@@ -73,9 +73,9 @@ class CartService extends Config {
         }
    }
 
-   async deleteOneRes(id,res){
+   async deleteOneRes(id,res,sessionId){
         try {
-            const del = await this.#deleteOne(id);
+            const del = await this.#deleteOne(id,sessionId);
 
             if (del) {
                 res.status(200).json({ msg: "The device was removed", ok: true });

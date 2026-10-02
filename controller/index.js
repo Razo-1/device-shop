@@ -4,6 +4,7 @@ const { market } = require("./shop");
 const { productController } = require("./Product");
 const { wishController } = require("./wishList");
 const { cartController } = require("./cart");
+const { authController } = require("./auth");
 
 module.exports = {  
     HomeController,
@@ -11,5 +12,6 @@ module.exports = {
     market,
     productController,
     wishController,
-    cartController
+    cartController,
+    authController
 }

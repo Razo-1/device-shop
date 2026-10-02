@@ -1,3 +1,4 @@
+const { AuthService } = require("./authService");
 const { CartService } = require("./cartSerive");
 const { HomeService } = require("./homeService");
 const { ProductService } = require("./productService");
@@ -9,5 +10,6 @@ module.exports = {
     ShopService,
     ProductService,
     WishService,
-    CartService
+    CartService,
+    AuthService
 }

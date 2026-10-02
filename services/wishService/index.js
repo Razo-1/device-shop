@@ -4,11 +4,11 @@ const { Config } = require("../config");
 
 class WishService extends Config {
 
-    async getWishList() {
+    async getWishList(sessionId) {
         try {
             await conectDB('usersDB');
             const db = getDB();
-            const user = await db.collection('users').findOne({ id: 1 });
+            const user = await db.collection('users').findOne({ _id: new ObjectId(sessionId) });
 
             if (!user || !user.whishList || user.whishList.length === 0) {
                 return [];
@@ -49,18 +49,18 @@ class WishService extends Config {
     }
 
 
-    async clearAllList(){
+    async clearAllList(sessionId){
         
         try{
             await conectDB('usersDB');
             const db = getDB();
 
-            const hasItems = await this.#isEmpty()
+            const hasItems = await this.#isEmpty(sessionId)
 
             if(hasItems){
                 await db.collection('users').updateOne(
                 {
-                    id : 1
+                    _id : new ObjectId(sessionId)
                 },
                 {
                     $set : {whishList : []}
@@ -78,11 +78,11 @@ class WishService extends Config {
         
     }
 
-    async #isEmpty(){
+    async #isEmpty(sessionId){
         await conectDB('usersDB');
         const db = getDB();
 
-        const user = await db.collection('users').findOne({id : 1})
+        const user = await db.collection('users').findOne({_id : new ObjectId(sessionId)})
         return user && user.whishList && user.whishList.length > 0
     }
 }

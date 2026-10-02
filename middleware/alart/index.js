@@ -4,6 +4,7 @@ const { conectDB, getDB } = require("../../DB");
 const alreadyExists = async (req,res,next) => {
 
     const { id } = req.body
+    const { sessionId } = req.cookies;
 
     try{
         await conectDB('usersDB');
@@ -11,7 +12,7 @@ const alreadyExists = async (req,res,next) => {
 
         const bool = await db.collection('users').findOne(
             {
-                id: 1,
+                _id: new ObjectId(sessionId),
                 "cart.id": new ObjectId(id)
             }
         )

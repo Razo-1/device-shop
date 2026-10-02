@@ -1,20 +1,26 @@
 class Cart {
     async renderCart(req,res,next){
+
+        const { sessionId } = req.cookies;
+
         const path = req.app.locals.services.cart.createPath('cart');
-        const cartDate = await req.app.locals.services.cart.renderCart();
+        const cartDate = await req.app.locals.services.cart.renderCart(sessionId);
         
         res.render(path,{cartDate})
     }
 
     async clearAll(req,res,next){
-        return await req.app.locals.services.cart.deleteAllRes(res);
+
+        const { sessionId } = req.cookies;
+
+        return await req.app.locals.services.cart.deleteAllRes(res,sessionId);
     }
 
     async deleteOne(req,res,next){
         const { id } = req.body
-        console.log(id);
+        const { sessionId } = req.cookies;
         
-        return await req.app.locals.services.cart.deleteOneRes(id,res);
+        return await req.app.locals.services.cart.deleteOneRes(id,res,sessionId);
     }
 }
 

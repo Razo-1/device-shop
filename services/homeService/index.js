@@ -13,9 +13,9 @@ class HomeService extends Config {
         return new Set(brand.map(el => el.brand))
     }
 
-    async renderShop(category){
+    async renderShop(category,sessionId){
         const shopDate = await this.#shopDate(category);
-        const user = await this.#userdate();
+        const user = await this.#userdate(sessionId);
 
         const shop = shopDate.map(el => {
             if(user && user.whishList && user.whishList.some(itm => itm.id.toString() === el._id.toString())){
@@ -33,7 +33,7 @@ class HomeService extends Config {
         const db = getDB();
 
 
-        return await db.collection('users').findOne({id : userId})
+        return await db.collection('users').findOne({_id : new ObjectId(userId)})
     }
 
     async #shopDate(category){
