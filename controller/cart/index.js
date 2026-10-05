@@ -1,7 +1,7 @@
 class Cart {
     async renderCart(req,res,next){
 
-        const { sessionId } = req.cookies;
+        const { sessionId } = req.user;
 
         const path = req.app.locals.services.cart.createPath('cart');
         const cartDate = await req.app.locals.services.cart.renderCart(sessionId);
@@ -11,14 +11,15 @@ class Cart {
 
     async clearAll(req,res,next){
 
-        const { sessionId } = req.cookies;
+        const { sessionId } = req.user;
 
         return await req.app.locals.services.cart.deleteAllRes(res,sessionId);
     }
 
     async deleteOne(req,res,next){
+        
         const { id } = req.body
-        const { sessionId } = req.cookies;
+        const { sessionId } = req.user;
         
         return await req.app.locals.services.cart.deleteOneRes(id,res,sessionId);
     }

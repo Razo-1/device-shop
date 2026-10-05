@@ -4,7 +4,7 @@ const { conectDB, getDB } = require("../../DB");
 const alreadyExists = async (req,res,next) => {
 
     const { id } = req.body
-    const { sessionId } = req.cookies;
+    const { sessionId } = req.user;
 
     try{
         await conectDB('usersDB');

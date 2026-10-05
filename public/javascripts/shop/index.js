@@ -3,6 +3,7 @@ import { displayProducts } from "./drawShop/index.js";
 import { favoritDevice } from "./favorite/index.js";
 import { getFilterParams } from "./paramFilter/index.js";
 
+
 const search = document.getElementById('search');
 
 search.addEventListener('submit',(e) => {

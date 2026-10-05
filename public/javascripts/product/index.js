@@ -15,4 +15,5 @@ qty(originalPrice)
 
 buyProdcut(originalPrice)
 
-toggleFavorite()
+toggleFavorite();
+

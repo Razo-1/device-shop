@@ -28,7 +28,10 @@ class HomeService extends Config {
         return shop
     }
 
-    async #userdate(userId = 1){
+    async #userdate(userId){
+
+        if(!userId || !ObjectId.isValid(userId)) return null;
+
         await conectDB('usersDB')
         const db = getDB();
 

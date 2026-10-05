@@ -13,7 +13,20 @@ export const toCart = (el) =>{
             category,
         })
     })
-    .then(res => res.json())
+    .then(res => {
+        if(res.status === 401){        
+            fetch(`http://localhost:3000/auth/refresh-token`,{
+                method : 'POST'
+            })
+            .then(res => {
+                if(!res.ok){
+                    window.location.href = '/'
+                    return
+                }
+            })
+        }
+        return res.json()
+    })
     .then(res => {
         if(res.ok){
             showAlert('success',res.msg)

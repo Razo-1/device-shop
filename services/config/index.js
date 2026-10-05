@@ -1,7 +1,9 @@
+require('dotenv').config()
 const fs = require('fs').promises;
 const path = require('path');
 const { conectDB, getDB } = require('../../DB');
 const { ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
 
 class Config {
     createPath(fileName){
@@ -47,6 +49,16 @@ class Config {
 
         return await db.collection(category).find().toArray()
     }
+
+
+    verifyAccessToken(token){
+        return jwt.verify(token,process.env.PUBLIC_KEY,{ algorithms : ['RS256'] })
+    }
+
+    verifyRefreshToken(token) {
+        return jwt.verify(token, process.env.PUBLIC_KEY, { algorithms: ['RS256'] });
+    }   
+    
 }
 
 module.exports.Config = Config;

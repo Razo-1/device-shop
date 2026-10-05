@@ -9,9 +9,25 @@ export function favoritDevice(el){
                 body : JSON.stringify({ category, id })
 
             })
-            .then(res => res.json())
             .then(res => {
-                if(res.ok){
+                if(res.status === 401){
+                    
+                    fetch(`http://localhost:3000/auth/refresh-token`,{
+                        method : 'POST'
+                    })
+                    .then(res => {
+                        if(!res.ok){
+                            window.location.href = '/'
+                            return
+                        }
+                    })
+                }
+                return res.json()
+                
+            })
+            .then(res => {    
+                            
+                if(res.ok){                    
                     el.classList.add('active');
                 }else{
                     el.classList.remove('active');

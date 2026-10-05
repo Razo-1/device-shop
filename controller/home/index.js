@@ -8,8 +8,7 @@ class Home {
     async renderShop(req,res,next){
 
         const { endpoint } = req.params
-
-        const { sessionId } = req.cookies;
+        const { sessionId } = req.user;
 
         const path = req.app.locals.services.home.createPath('shop');
         const category = await req.app.locals.services.home.filrtBrand(endpoint);
@@ -19,6 +18,20 @@ class Home {
 
     toLogin(req,res,next){
         res.redirect('/auth/sign-in');
+    }
+
+    async renderProfile(req,res,next){
+        try{
+            const { sessionId } = req.user;
+
+            const path = req.app.locals.services.home.createPath('profile');
+            const user = await req.app.locals.services.home.renderUserDate(sessionId);
+
+            return res.render(path , {profile : user});
+        }catch(error){
+            console.log(error);
+            res.status(500).json({msg: error.message, ok: false});
+        }
     }
 }
 

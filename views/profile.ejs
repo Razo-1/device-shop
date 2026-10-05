@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Umbrella</title>
+    <link rel="stylesheet" href="/stylesheets/profile/profile.css">   
+    <link rel="stylesheet" href="/stylesheets/notification/notification.css">
+</head>
+<body>
+<div class="container">
+
+        <div class="page-header">
+            <h1 class="page-title">My Profile</h1>
+        </div>
+
+        <div class="profile-wrapper">
+            <div class="profile-main">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div style="position: relative;">
+                            <div class="profile-avatar">
+                                <% if (profile && profile.avatar) { %>
+                                    <img src="<%= profile.avatar %>" alt="<%= profile.name %>" class="avatar-image">
+                                <% } else { %>
+                                    <div class="avatar-placeholder"><%= profile && profile.name ? profile.name.charAt(0).toUpperCase() : 'U' %></div>
+                                <% } %>
+                            </div>
+                            <label class="avatar-edit-label">
+                                <input type="file" accept="image/*" />
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </label>
+                        </div>
+                        <div class="profile-info">
+                            <h2 class="user-name"><%= profile && profile.name ? profile.name : 'User' %></h2>
+                            <p class="user-email"><%= profile && profile.email ? profile.email : 'no-email@example.com' %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="balance-card">
+                    <div class="balance-header">
+                        <div class="balance-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <path d="M12 1v6m0 6v4"></path>
+                                <path d="M4.22 4.22l4.24 4.24m5.08 0l4.24-4.24"></path>
+                                <path d="M1 12h6m6 0h4"></path>
+                                <path d="M4.22 19.78l4.24-4.24m5.08 0l4.24 4.24"></path>
+                                <path d="M12 17v6"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="balance-label">Account Balance</p>
+                            <h3 id="balance" class="balance-amount">$<%= profile && profile.balance ? profile.balance.toFixed(2) : '0.00' %></h3>
+                        </div>
+                    </div>
+                    <div class="balance-actions">
+                        <button class="btn-balance" id="btn-add-funds">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Funds
+                        </button>
+                    </div>
+                </div>
+
+                <div class="transactions-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Recent Transactions</h3>
+                    </div>
+                    <div class="transactions-list">
+                        <% if (profile && profile.transactions && profile.transactions.length > 0) { %>
+                            <% profile.transactions.slice(0, 10).forEach((transaction) => { %>
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-icon <%= transaction.type %>">
+                                        <% if (transaction.type === 'purchase') { %>
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zM7.17 14.75l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25z"></path></svg>
+                                        <% } else if (transaction.type === 'refund') { %>
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"></path></svg>
+                                        <% } else { %>
+                                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                                        <% } %>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <p class="transaction-title"><%= transaction.title || 'Transaction' %></p>
+                                        <p class="transaction-date">
+                                            <% 
+                                                const transDate = new Date(transaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                            %>
+                                            <%= transDate %>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="transaction-amount <%= transaction.type === 'purchase' ? 'negative' : 'positive' %>">
+                                    <%= transaction.type === 'purchase' ? '-' : '+' %>$<%= Math.abs(transaction.amount).toFixed(2) %>
+                                </div>
+                            </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2m0 0V7a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0V9a2 2 0 012-2m0 0h6"></path>
+                                </svg>
+                                <p>No transactions yet</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="profile-sidebar">
+                <div class="menu-card">
+                    <h3 class="menu-title">Account Settings</h3>
+                    <nav class="menu-list">
+                        <a class="menu-item" href="/user/cart">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path>
+                            </svg>
+                            <span>View Cart</span>
+                            <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                        <a class="menu-item" href="/user/wishlist">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                            <span>Wishlist</span>
+                            <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="stats-card">
+                    <h3 class="stats-title">Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-number">$<%= profile && profile.totalSpent ? profile.totalSpent.toFixed(0) : '0' %></div>
+                            <div class="stat-name">Total Spent</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number"><%= profile && profile.whishList ? profile.whishList.length : 0 %></div>
+                            <div class="stat-name">Favorites</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="password-card">
+                    <h3 class="password-title">Change Password</h3>
+                    <form class="password-form">
+                        <div class="form-group">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" class="form-input" placeholder="Enter current password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-input" placeholder="Enter new password" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" class="form-input" placeholder="Confirm new password" required>
+                        </div>
+                        <button type="submit" class="btn-submit-password">Update Password</button>
+                    </form>
+                </div>
+
+                <div class="danger-zone">
+                    <h3 class="danger-title">Danger Zone</h3>
+                    <button id="logout" class="btn-danger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div id="modal-add-funds" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Funds</h2>
+                <button class="modal-close" id="close-add-funds" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="form-add-funds">
+                    <div class="form-group">
+                        <label class="form-label">Amount ($)</label>
+                        <input type="number" class="form-input" placeholder="Enter amount" min="1" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-input" required>
+                            <option value="">Select payment method</option>
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="bank">Bank Transfer</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-modal-submit">Add Funds</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('./total/Notification/notification.ejs')%>
+
+    <script type="module" src="/javascripts/profile/index.js"></script>
+</body>
+</html>
