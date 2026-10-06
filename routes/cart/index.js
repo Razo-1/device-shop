@@ -5,8 +5,8 @@ const { authStack } = require('../../middleware');
 
 
 cartRouter.get('/cart',authStack,cartController.renderCart)
+cartRouter.patch('/cart/buy',authStack,cartController.buyCart)
 cartRouter.delete('/cart/clear-all',authStack,cartController.clearAll)
 cartRouter.delete('/cart/delete',authStack,cartController.deleteOne)
-
 
 module.exports = { cartRouter }

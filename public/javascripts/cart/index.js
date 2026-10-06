@@ -1,3 +1,4 @@
+import { showAlert } from "../total/alart/index.js";
 import { updateOrder } from "./updateOrder/index.js";
 import { updateQuantity } from "./updateQuantity/index.js";
 import { viewProduct } from "./viewProduct/index.js";
@@ -68,24 +69,40 @@ document.querySelectorAll('button[data-rem]').forEach(el => {
     })
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const buy = document.getElementById('buy');
 
-buy.addEventListener('click',(e) => {
-    console.log('buy');
-    
+buy.addEventListener('click',() => {
+
+    const counts = [...document.querySelectorAll('.qty-input')].map(input => ({
+        id : input.dataset.id,
+        count : Number(input.value)
+    }))
+
+    fetch(`http://localhost:3000/user/cart/buy`,{
+        method : 'PATCH',
+        headers : { 'Content-Type' : 'application/json' },
+        credentials : 'include',
+        body : JSON.stringify({ counts })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if(res.ok){
+            showAlert('success', res.msg)
+
+            const itemCarts = document.getElementById('itemCarts');
+            itemCarts.innerHTML = ''
+
+            document.querySelector('.cart-summary').remove()
+            document.getElementById('cleanAll').remove()
+
+            buy.remove()
+
+            const count = document.querySelector('.results-count');
+            count.textContent = '0 items'
+        }else{
+            showAlert('error', res.msg)
+        }
+    })
+    .catch(rej => console.log(rej))
+
 })

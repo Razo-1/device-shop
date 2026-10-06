@@ -22,6 +22,27 @@ class Profile {
             res.status(500).json({msg: error.message, ok: false})
         }
     }
+
+    async editAvatar(req,res,next){
+        try{
+            const { sessionId } =  req.user;
+
+            await req.app.locals.services.profile.newAvatar(req,res,sessionId)
+        }catch(error){
+            console.log(error);
+            res.status(500).json({msg: error.message, ok: false})
+        }
+    }
+
+    async deleteAvatar(req,res,next){
+        try{
+            const { sessionId } =  req.user;
+            await req.app.locals.services.profile.deleteAvatar(res,sessionId)
+        }catch(error){
+            console.log(error);
+            res.status(500).json({msg: error.message, ok: false})
+        }
+    }
 }
 
 module.exports.profileController = new Profile();

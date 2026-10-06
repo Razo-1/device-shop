@@ -128,6 +128,10 @@ class ShopService extends Config {
         const product = await this.#shopProd(type,detail);
         const userProduct = await this.#userProduct(sessionId)
 
+        if(product){
+            product.categorySlug = type;
+        }
+
         if(product && userProduct && userProduct.whishList && userProduct.whishList.some(el => el.id.toString() === product._id.toString())){
             product.favorit = true
             return product

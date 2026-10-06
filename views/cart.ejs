@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/stylesheets/cart/cart.css">
+    <link rel="stylesheet" href="/stylesheets/notification/notification.css">
 </head>
 <body>
     <div class="container">
@@ -103,7 +104,7 @@
                             </div>
         
                             <button id="buy" class="btn-primary btn-checkout">
-                                Proceed to Checkout
+                                Buy
                             </button>
         
                         </div>
@@ -111,7 +112,7 @@
                 <%}%>
             </div>
 
-            
+            <%- include('./total/Notification/notification.ejs') %>
 
              
 
