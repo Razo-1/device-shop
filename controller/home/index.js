@@ -33,6 +33,20 @@ class Home {
             res.status(500).json({msg: error.message, ok: false});
         }
     }
+
+    async renderReturnDevice(req,res,next){
+        try{
+            const { sessionId } = req.user;
+
+            const path = req.app.locals.services.home.createPath('revert');
+            const user = await req.app.locals.services.home.renderUserDate(sessionId);
+
+            return res.render(path , {user});
+        }catch(error){
+            console.log(error);
+            res.status(500).json({msg: error.message, ok: false});
+        }
+    }
 }
 
 module.exports.HomeController = new Home()

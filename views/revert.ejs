@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/revert/revert.css">
+    <link rel="stylesheet" href="/stylesheets/home/home.css">
+    <link rel="stylesheet" href="/stylesheets/notification/notification.css">
+</head>
+<body>
+    <div class="container">
+
+        <%- include('./total/header/header.ejs')%>
+
+
+        <div class="page-header">
+            <a href="/" class="btn-back">← Back</a>
+            <div class="page-header-content">
+                <h1 class="page-title">My Purchases</h1>
+                <p class="page-subtitle">Return items you purchased</p>
+            </div>
+        </div>
+
+            <div class="products-grid">
+                <% const userTransactions = user.transactions.filter(t => t.type === 'purchase'); %>
+                
+                <% if (userTransactions.length === 0) { %>
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-title">No purchases yet</div>
+                        <div class="empty-text">Start shopping to see your purchases here</div>
+                    </div>
+                <% } else { %>
+                    <% userTransactions.forEach((product, indx) => { %>
+                        <div class="product-card" data-productId="<%= product.id %>" data-count="<%= product.count %>" data-title="<%= product.title %>">
+                            <div class="product-image-container">
+                                <img src="<%= product.img %>" alt="<%= product.title %>" class="product-image">
+                            </div>
+                            <div class="product-brand"><%= product.brand %></div>
+                            <h3 class="product-title"><%= product.title %></h3>
+                            <div class="product-info">
+                                <span class="product-date"><%= new Date(product.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></span>
+                                <span class="product-amount">$<%= product.amount %></span>
+                            </div>
+                                <button type="submit" class="btn-primary btn-return">Return Item</button>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+
+        <%- include('./total/Notification/notification.ejs')%>
+    </div>
+
+    <script type="module" src="/javascripts/revert/index.js"></script>
+</body>
+</html>

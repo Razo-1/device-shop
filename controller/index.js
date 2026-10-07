@@ -6,6 +6,7 @@ const { wishController } = require("./wishList");
 const { cartController } = require("./cart");
 const { authController } = require("./auth");
 const { profileController } = require("./profile/profile");
+const { revertController } = require("./revert");
 
 module.exports = {  
     HomeController,
@@ -15,5 +16,6 @@ module.exports = {
     wishController,
     cartController,
     authController,
-    profileController
+    profileController,
+    revertController,
 }

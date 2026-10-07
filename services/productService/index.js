@@ -18,8 +18,10 @@ class ProductService extends Config {
             if(!device){
                 return false
             }
+
+            const fullPrice = Math.floor(device.price / 362) * count
                         
-            return Math.floor(device.price / 362) * count
+            return { fullPrice,img : device.image }
 
         }catch(error){
             console.log(error)
@@ -50,7 +52,7 @@ class ProductService extends Config {
         }
     }
 
-    async #buyDevice(sessionId, price, catalog, count){
+    async #buyDevice(sessionId, price, catalog, count, id, img){
         try{
             await conectDB('usersDB')
             const db = getDB();
@@ -62,7 +64,9 @@ class ProductService extends Config {
                 type: 'purchase',
                 title: catalog,
                 count,
-                amount: price
+                amount: price,
+                id,
+                img
             }
 
             const user = await db.collection('users').updateOne(
@@ -121,12 +125,12 @@ class ProductService extends Config {
 
     async buyProduct(res,{id,count,catalog},sessionId){
         try{
-           const fullDevicePrice =  await this.#gadgetPrice(id,count,catalog);
+           const {fullPrice,img} =  await this.#gadgetPrice(id,count,catalog);
            const userBalance = await this.#userBalance(sessionId)
 
-           if(fullDevicePrice && userBalance && userBalance >= fullDevicePrice){
+           if(fullPrice && userBalance && userBalance >= fullPrice){
 
-                const buyDevice = await this.#buyDevice(sessionId,fullDevicePrice,catalog,count);
+                const buyDevice = await this.#buyDevice(sessionId,fullPrice,catalog,count,id,img);
                 const incDevice = await this.#incDevice(catalog,count,id);
 
                 if(buyDevice && incDevice){

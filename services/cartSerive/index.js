@@ -126,8 +126,9 @@ class CartService extends Config {
             const transactions = items.map(({ product, count, itemPrice, category }) => ({
                 date,
                 type: 'purchase',
-                title: product.title || category,
-                
+                title: category || product.title  ,
+                id : product._id.toString(),
+                img : product.image,
                 amount: itemPrice
             }));
 

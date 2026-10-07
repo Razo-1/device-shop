@@ -13,8 +13,9 @@ const { wishlistRouter } = require('./routes/whishlist');
 const { cartRouter } = require('./routes/cart');
 const { authRouter } = require('./routes/auth');
 const { profileRouter } = require('./routes/profile');
+const { revertRouter } = require('./routes/revert');
 
-const { HomeService,ShopService,ProductService,WishService,CartService,AuthService,ProfileService } = require('./services');
+const { HomeService,ShopService,ProductService,WishService,CartService,AuthService,ProfileService,ReverService } = require('./services');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.locals.services = {
   cart : new CartService(),
   auth : new AuthService(),
   profile : new ProfileService(),
+  revert : new ReverService(),
 }
 
 app.set('views', path.join(__dirname, 'views'));
@@ -49,6 +51,7 @@ app.use('/user',wishlistRouter);
 app.use('/user',cartRouter);
 app.use('/auth',authRouter);
 app.use('/profile',profileRouter);
+app.use('/return-device',revertRouter);
 
 
 app.use(function(req, res, next) {

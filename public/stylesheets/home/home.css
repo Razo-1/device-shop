@@ -161,6 +161,13 @@ nav a:hover {
   background-repeat:no-repeat;
   color:#696969 !important;
 }
+
+.revert{
+  background-image:url('../../images/catalog/revert.jpg');
+  background-repeat:no-repeat;
+  color:#696969 !important;
+  cursor: pointer;
+}
 .card .content,
 .card .arrow-icon {
   position: relative;
