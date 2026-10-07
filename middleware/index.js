@@ -4,5 +4,5 @@ const { checkPassword } = require('./checkPassword/checkPassword');
 const { deposit } = require('./deposit/deposrti');
 const { removeAvatar } = require('./removeAvatar');
 const { upload } = require('./upload/upload');
-
-module.exports = { alreadyExists,authStack,checkPassword,deposit,upload,removeAvatar };
+const { toHome } = require('./toHome')
+module.exports = { alreadyExists,authStack,checkPassword,deposit,upload,removeAvatar,toHome };

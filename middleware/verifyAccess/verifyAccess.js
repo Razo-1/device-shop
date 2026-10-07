@@ -1,7 +1,7 @@
 async function verifyAccessToken(req, res, next) {
     try {
         const token = req.cookies.accessToken;
-
+        
         if (!token) {
             return await tryRefresh(req, res, next);
         }
@@ -17,9 +17,11 @@ async function verifyAccessToken(req, res, next) {
 async function tryRefresh(req, res, next) {
     try {
         const refreshToken = req.cookies.refreshToken;
+
         if (!refreshToken) {
-            return res.status(401).json({ msg: 'Not authenticated', ok: false });
+            return res.redirect('/auth/sign-in')
         }
+        
 
         const newAccessToken = await req.app.locals.services.auth.refreshAccessToken(refreshToken);
 
@@ -33,7 +35,7 @@ async function tryRefresh(req, res, next) {
         req.user = decoded;
         next();
     } catch (err) {
-        res.status(401).json({ msg: 'Session expired, please login again', ok: false });
+        res.redirect('/auth/sign-in')
     }
 }
 

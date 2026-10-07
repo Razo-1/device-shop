@@ -1,5 +1,4 @@
 require('dotenv').config();
-const { ObjectId } = require('mongodb');
 const { conectDB, getDB } = require('../../DB');
 const { Config } = require('../config');
 const jwt = require('jsonwebtoken');
@@ -12,8 +11,11 @@ class AuthService extends Config {
 
             body.whishList = [];
             body.cart = [];
+            body.balance = 0;
+            body.avatar = "";
+            body.totalSpent = 0;
+            body.transactions = [];
             
-
             const result = await db.collection('users').insertOne(body)
 
             if(result) return {ok : true, sessionId : result.insertedId};
@@ -59,18 +61,24 @@ class AuthService extends Config {
 
     
 
-    createToken(res,sessionId){
+    createToken(res,sessionId,remember){
+
+        const refreshOptions = {
+            httpOnly: true,
+            sameSite: 'strict'
+        };
+
+        if(remember){
+            refreshOptions.maxAge = 7 * 24 * 60 * 60 * 1000
+        }
+
         res.cookie('accessToken',this.#createAccessToken(sessionId),{
             httpOnly: true,
             sameSite: 'strict',
             maxAge: 15 * 60 * 1000
         });
 
-        res.cookie('refreshToken',this.#createRefreshToken(sessionId),{
-            httpOnly: true,
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+        res.cookie('refreshToken',this.#createRefreshToken(sessionId),refreshOptions)
     }
 
     async refreshAccessToken(token){

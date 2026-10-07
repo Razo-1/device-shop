@@ -25,9 +25,11 @@ class AuthController {
 
     async loginUser(req,res,next){
         try{
+            const { remember } = req.body
+
             const user = await req.app.locals.services.auth.loginUser(req.body);
             
-            req.app.locals.services.auth.createToken(res,user.sessionId)
+            req.app.locals.services.auth.createToken(res,user.sessionId,remember)
 
             res.status(200).json({msg : 'user profil found!', ok : user.ok});
         }catch(error){
