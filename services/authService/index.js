@@ -2,6 +2,7 @@ require('dotenv').config();
 const { conectDB, getDB } = require('../../DB');
 const { Config } = require('../config');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 class AuthService extends Config {
     async createUser(body){
@@ -13,6 +14,7 @@ class AuthService extends Config {
 
             if(exists) throw new Error('This email is already registered');
 
+            body.password = await bcrypt.hash(body.password,10);
             body.whishList = [];
             body.cart = [];
             body.balance = 0;
@@ -34,9 +36,9 @@ class AuthService extends Config {
             await conectDB('usersDB');
             const db = getDB();
 
-            const result = await db.collection('users').findOne({"email" : body.email, "password" : body.password})
+            const result = await db.collection('users').findOne({"email" : body.email})
 
-            if(!result) throw new Error('Invalid email address or password');
+            if(!result || !await bcrypt.compare(body.password,result.password)) throw new Error('Invalid email address or password');
 
             return {ok : true , sessionId : result._id};
         }catch(error){

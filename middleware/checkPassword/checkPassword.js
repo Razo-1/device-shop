@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 const checkPassword = async (req, res, next) => {
     try {
         const { current, newPass } = req.body;
@@ -12,7 +14,7 @@ const checkPassword = async (req, res, next) => {
 
         const user = await req.app.locals.services.profile.renderUserDate(sessionId);
 
-        if (user.password !== current) {
+        if (!await bcrypt.compare(current, user.password)) {
             return res.status(401).json({
                 msg: 'Current password is incorrect',
                 ok: false

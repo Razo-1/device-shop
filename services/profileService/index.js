@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 const { conectDB, getDB } = require('../../DB')
 const { Config } = require('../config')
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 class ProfileService extends Config {
     async #changePassword(newPass,sessionId){
@@ -11,7 +12,7 @@ class ProfileService extends Config {
 
             const resulte = await db.collection('users').updateOne(
                 {_id : new ObjectId(sessionId)},
-                {$set : { "password" : newPass }}
+                {$set : { "password" : await bcrypt.hash(newPass,10) }}
             )
 
             if(resulte.matchedCount === 0){
