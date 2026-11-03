@@ -5,7 +5,7 @@ const { authStack,checkPassword,deposit,upload,removeAvatar } = require('../../m
 
 profileRouter.patch('/change-password',authStack,checkPassword,profileController.changePassword);
 profileRouter.patch('/deposit',authStack,deposit,profileController.addFunds);
-profileRouter.patch('/avatar',authStack,upload.single('avatar'),profileController.editAvatar)
+profileRouter.patch('/avatar',authStack,upload,profileController.editAvatar)
 profileRouter.delete('/remove-avatar',authStack,removeAvatar,profileController.deleteAvatar)
 
 
