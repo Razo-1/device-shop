@@ -125,6 +125,10 @@ class ProductService extends Config {
 
     async buyProduct(res,{id,count,catalog},sessionId){
         try{
+           if(!Number.isInteger(count) || count < 1){
+                return res.status(400).json({msg : 'Invalid quantity.',ok : false})
+           }
+
            const {fullPrice,img} =  await this.#gadgetPrice(id,count,catalog);
            const userBalance = await this.#userBalance(sessionId)
 
@@ -146,6 +150,7 @@ class ProductService extends Config {
             }
         }catch(error){
             console.log(error)
+            res.status(500).json({msg : 'An error occurred.',ok : false})
         }
     }
 }

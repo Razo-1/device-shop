@@ -12,7 +12,7 @@ class ShopService extends Config {
         minPrice && (filter.price = { $gte: minPrice })
         maxPrice && (filter.price = { ...filter.price, $lte: maxPrice })
         brand && (filter.brand = brand)
-        inStock && (filter.inStock = inStock)
+        inStock && (filter.inStock = { $gt: 0 })
         isNew && (filter.isNew = isNew)
         rating && (filter.rating = { $gte: rating })
         

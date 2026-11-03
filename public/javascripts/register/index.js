@@ -66,7 +66,7 @@ form.addEventListener('submit', (e) => {
             }else{
                 const error = document.createElement('span');
                 error.classList.add('invError');
-                error.textContent = res.message || 'Registration failed';
+                error.textContent = res.msg || 'Registration failed';
                 btn.before(error);
             }
         })

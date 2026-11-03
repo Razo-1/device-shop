@@ -9,6 +9,10 @@ class AuthService extends Config {
             await conectDB('usersDB');
             const db = getDB();
 
+            const exists = await db.collection('users').findOne({"email" : body.email})
+
+            if(exists) throw new Error('This email is already registered');
+
             body.whishList = [];
             body.cart = [];
             body.balance = 0;
@@ -18,12 +22,10 @@ class AuthService extends Config {
             
             const result = await db.collection('users').insertOne(body)
 
-            if(result) return {ok : true, sessionId : result.insertedId};
-
-            return false
+            return {ok : true, sessionId : result.insertedId};
         }catch(error){
             console.log(error);
-            return error
+            throw error
         }
     }
 
@@ -32,14 +34,14 @@ class AuthService extends Config {
             await conectDB('usersDB');
             const db = getDB();
 
-            const result = await db.collection('users').findOne({"email" : body.email})
+            const result = await db.collection('users').findOne({"email" : body.email, "password" : body.password})
 
-            if(result) return {ok : true , sessionId : result._id};
-            
-            return false
+            if(!result) throw new Error('Invalid email address or password');
+
+            return {ok : true , sessionId : result._id};
         }catch(error){
             console.log(error);
-            return error
+            throw error
         }
     }
 

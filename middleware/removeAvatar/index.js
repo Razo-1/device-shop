@@ -3,10 +3,12 @@ const fs = require('fs').promises;
 
 const removeAvatar = async (req,res,next) => {
     try{
-        const file = await fs.readdir(path.join(__dirname,'..','..','upload'));
-        
-        if(file.length > 0){
-            await fs.unlink(path.join(__dirname,'..','..','upload',file[0]));
+        const { sessionId } = req.user;
+        const files = await fs.readdir(path.join(__dirname,'..','..','upload'));
+        const file = files.find(el => el.startsWith(sessionId));
+
+        if(file){
+            await fs.unlink(path.join(__dirname,'..','..','upload',file));
         }else{
             return res.status(401).json({msg : 'Profile picture is missing. Nothing to delete.', ok : false})
         }
@@ -17,4 +19,4 @@ const removeAvatar = async (req,res,next) => {
     }
 }
 
-module.exports = { removeAvatar }
+module.exports = { removeAvatar };

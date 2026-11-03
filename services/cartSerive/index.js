@@ -108,7 +108,7 @@ class CartService extends Config {
             if(!product) return null;
 
             const countEntry = counts.find(c => c.id === cartItem.id.toString());
-            const count = countEntry ? countEntry.count : 1;
+            const count = countEntry && Number.isInteger(countEntry.count) && countEntry.count > 0 ? countEntry.count : 1;
             const itemPrice = Math.floor(product.price / 362) * count;
             totalPrice += itemPrice;
             items.push({ product, count, itemPrice, category: cartItem.category });
@@ -126,6 +126,7 @@ class CartService extends Config {
             const transactions = items.map(({ product, count, itemPrice, category }) => ({
                 date,
                 type: 'purchase',
+                count,
                 title: category || product.title  ,
                 id : product._id.toString(),
                 img : product.image,
@@ -135,10 +136,9 @@ class CartService extends Config {
             await db.collection('users').updateOne(
                 { _id: new ObjectId(sessionId) },
                 {
-                    $inc: { balance: -totalPrice },
+                    $inc: { balance: -totalPrice, totalSpent : totalPrice },
                     $push: { transactions: { $each: transactions } },
-                    $set: { cart: [] },
-                    $inc : { totalSpent : totalPrice}
+                    $set: { cart: [] }
                 }
             );
 

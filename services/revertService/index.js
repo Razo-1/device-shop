@@ -5,10 +5,15 @@ const { Config } = require('../config')
 class ReverService extends Config {
     async returnDevice(res,sessionId,id,count,title){
         try{
-            const shop = await this.#returnInTheShop(id,count,title);
             const updateTransactions = await this.#updateUserTransactions(sessionId,id)
 
-            if(shop && updateTransactions){
+            if(!updateTransactions){
+                return res.status(401).json({msg : 'Product not found' , ok : false})
+            }
+
+            const shop = await this.#returnInTheShop(id,updateTransactions.count,title);
+
+            if(shop){
                 return res.status(200).json({msg : 'The item was returned.' , ok : true})
             }else{
                 return res.status(401).json({msg : 'Product not found' , ok : false})
@@ -17,7 +22,7 @@ class ReverService extends Config {
             console.log(error);
             return res.status(500).json({msg : 'An error occurred; please try again later.' , ok : false})
         }
-        
+
     }
 
     async #returnInTheShop(id,count,title){
@@ -48,16 +53,25 @@ class ReverService extends Config {
             await conectDB('usersDB');
             const db = getDB();
 
-            const result = await db.collection('users').updateOne(
-                { _id: new ObjectId(sessionId), "transactions.id": id },
-                { $set: { "transactions.$.type": 'refund' } }
+            const user = await db.collection('users').findOne(
+                { _id: new ObjectId(sessionId), transactions : { $elemMatch : { id, type : 'purchase' } } }
             )
 
-            if(result.matchedCount === 0){
+            if(!user){
                 return false;
             }
 
-            return true
+            const transaction = user.transactions.find(el => el.id === id && el.type === 'purchase');
+
+            await db.collection('users').updateOne(
+                { _id: new ObjectId(sessionId), transactions : { $elemMatch : { id, type : 'purchase' } } },
+                {
+                    $set : { "transactions.$.type": 'refund' },
+                    $inc : { balance : transaction.amount, totalSpent : -transaction.amount }
+                }
+            )
+
+            return { count : transaction.count || 1 }
         }catch(error){
             console.log(error);
             return false
